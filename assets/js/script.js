@@ -1,3 +1,5 @@
+var pageContentEl = document.querySelector("#page-content");
+
 // Task ID Count
 var taskIdCounter = 0;
 
@@ -54,7 +56,7 @@ var createTaskEl = function(taskDataObj) {
 
     // increment taskIdCounter by 1
     taskIdCounter++;
-}
+};
 
 // Create task actions
 var createTaskActions = function(taskId) {
@@ -97,7 +99,25 @@ var createTaskActions = function(taskId) {
     }
 
     return actionContainerEl;
-}
+};
 
 // When the form is submited perform the createTaskHandler() function
 formEl.addEventListener("submit", taskFormHandler);
+
+// task button handler function
+var taskButtonHandler = function(event) {
+
+    if (event.target.matches(".delete-btn")) {
+        // get the element's task id 
+        var taskId = event.target.getAttribute("data-task-id");
+        deleteTask(taskId);
+    }
+};
+
+var deleteTask = function(taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    taskSelected.remove();
+};
+
+// When main section is clicked perform the taskButtonHandler() function
+pageContentEl.addEventListener("click", taskButtonHandler);
