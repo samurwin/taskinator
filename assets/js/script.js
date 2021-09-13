@@ -202,8 +202,6 @@ var completedEditTask = function(taskName, taskType, taskId) {
         if (tasks[i].id === parseInt(taskId)) {
             tasks[i].name = taskName;
             tasks[i].type = taskType;
-
-
         }
     }
     saveTasks();
@@ -241,8 +239,54 @@ var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+// load tasks from the local storage
+var loadTasks = function() {
+    // get task items from the local storage
+    tasks = localStorage.getItem("tasks");
+    // convert tasks from string format back into an array of objects
+    tasks = JSON.parse(tasks);
+
+    //iterate through a tasks array and create task elements on the page from it
+    for (var i = 0; i < tasks.length; i++) {
+        // reassign the id property of tasks[i] to the value of the taskIdCounter
+        taskIdCounter = tasks[i].id;
+        // create a <li> element and store it in a variable called listItemEl
+        listItemEl = document.createElement("li");
+        listItemEl.className = "task-item";
+        listItemEl.setAttribute("data-task-id", tasks[i].id)
+
+        // create a <div> element and store it in a variable called taskInfoEl
+        taskInfoEl = document.createElement("div");
+        taskInfoEl.className = "task-info";
+        // set it's inner HTML
+        taskInfoEl.innerHTML = "<h3 class='task-name'>" + tasks[i].name + "</h3><span class='task-type'>" + tasks[i].type + "</span>";
+
+        listItemEl.appendChild(taskInfoEl);
+
+        // create task actions bu calling the createTaskActions() function with an argument of taks[i].id
+        var tasksActionsEl = createTaskActions(tasks[i].id);
+
+        listItemEl.appendChild(tasksActionsEl);
+
+        // use conditional statements to assign the correct task status
+        if (tasks[i].status === "to do") {
+            tasksToDoEl.appendChild(listItemEl);
+        } else if (tasks[i].status === "in progress") {
+            tasksInProgressEl.appendChild(listItemEl);
+        } else if (tasks[i].status === "completed") {
+            tasksCompletedEl.appendChild(listItemEl);
+        }
+
+        taskIdCounter++;
+
+    }
+
+}
+
 // When main section is clicked perform the taskButtonHandler() function
 pageContentEl.addEventListener("click", taskButtonHandler);
 
 // When the task status is changed perform the taskStatusChangeHandler() function
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+loadTasks();
